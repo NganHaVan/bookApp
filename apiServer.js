@@ -15,7 +15,11 @@ app.use(cookieParser());
 // APIs
 var mongoose= require('mongoose');
 var Books=require('./models/books.js');
-mongoose.connect('mongodb://localhost:27017/bookshop',{useMongoClient:true});
+// Mongo lab
+mongoose.connect('mongodb://testUser:password@ds113936.mlab.com:13936/bookshop',{useMongoClient:true});
+
+// Local lab
+// mongoose.connect('mongodb://localhost:27017/bookshop',{useMongoClient:true});
 
   // Middleware to capture session
     var db=mongoose.connection;

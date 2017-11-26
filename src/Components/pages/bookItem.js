@@ -12,7 +12,7 @@ class BookItem extends React.Component{
         }
     }
     onReadmore=()=>{
-        this.setState({isClicked:true});
+        this.setState({isClicked:!this.state.isClicked});
     }
     handleCart=()=>{
         const book=[...this.props.cart,{
@@ -42,16 +42,16 @@ class BookItem extends React.Component{
     }
     render(){
         return(
-            <Well>
+            <Well style={{minHeight:'300px'}}>
                 <Row>
                     <Col xs={12} sm={6}>
                         <Image src={this.props.images} responsive/>
                     </Col>
-                    <Col xs={6} sm={6}>
+                    <Col xs={12} sm={6}>
                     <p><b>Title:</b> {this.props.title}</p>
-                    <p><b>Description:</b> {(this.props.description.length>20 && this.state.isClicked===false)?(this.props.description.substring(0,20)):(this.props.description)}</p>
+                    <p><b>Description:</b> {(this.props.description.length>20 && this.state.isClicked===false)?(this.props.description.substring(0,50)):(this.props.description)}</p>
                         <button className='link' onClick={this.onReadmore.bind(this)}>
-                            {(this.state.isClicked===false && this.props.description.length>20 && this.props.description!==null)?('...read more'):('')}
+                            {(this.state.isClicked===false && this.props.description.length>50 && this.props.description!==null)?('...Show more'):('')}
                         </button>
                     <p><b>Price:</b> {this.props.price} Euro</p>
                     <Button onClick={this.handleCart} bsStyle='primary'>Buy Now</Button>
