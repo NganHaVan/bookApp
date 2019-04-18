@@ -5234,7 +5234,7 @@ var go = exports.go = function go(n) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -5253,64 +5253,66 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function getCart() {
-    return function (dispatch) {
-        _axios2.default.get('/api/cart').then(function (res) {
-            dispatch({ type: 'GET_CART', load: res.data });
-        }).catch(function (err) {
-            dispatch({ type: 'GET_CART_REJECTED', load: err });
-        });
-    };
+  return function (dispatch) {
+    _axios2.default.get("/api/cart").then(function (res) {
+      dispatch({ type: "GET_CART", load: res.data });
+    }).catch(function (err) {
+      dispatch({ type: "GET_CART_REJECTED", load: err });
+    });
+  };
 }
 
 function addToCart(cart) {
-    return function (dispatch) {
-        _axios2.default.post('/api/cart', cart).then(function (res) {
-            dispatch({ type: 'ADD_TO_CART', load: res.data });
-        }).catch(function (err) {
-            dispatch({ type: 'ADD_TO_CART_REJECTED', load: err });
-        });
-    };
+  return function (dispatch) {
+    _axios2.default.post("/api/cart", cart).then(function (res) {
+      dispatch({ type: "ADD_TO_CART", load: res.data });
+    }).catch(function (err) {
+      dispatch({ type: "ADD_TO_CART_REJECTED", load: err });
+    });
+  };
 
-    // return{
-    //     type:'ADD_TO_CART',
-    //     load:book
-    // }
+  // return{
+  //     type:'ADD_TO_CART',
+  //     load:book
+  // }
 }
 
 function deleteCart(cart) {
-    return function (dispatch) {
-        _axios2.default.post('/api/cart', cart).then(function (res) {
-            dispatch({ type: 'DELETE_CART_ITEM', load: res.data });
-        }).catch(function (err) {
-            dispatch({ type: 'DELETE_CART_ITEM_REJECTED', load: err });
-        });
-    };
-    // return{
-    //     type:'DELETE_CART_ITEM',
-    //     load:book
-    // }
+  return function (dispatch) {
+    _axios2.default.post("/api/cart", cart).then(function (res) {
+      dispatch({ type: "DELETE_CART_ITEM", load: res.data });
+    }).catch(function (err) {
+      dispatch({ type: "DELETE_CART_ITEM_REJECTED", load: err });
+    });
+  };
+  // return{
+  //     type:'DELETE_CART_ITEM',
+  //     load:book
+  // }
 }
 
 function updateCart(_id, unit, cartArr) {
-    var currentCart = cartArr;
-    var indexToUpdate = currentCart.findIndex(function (cart) {
-        return cart._id === _id;
+  var currentCart = cartArr;
+  var indexToUpdate = currentCart.findIndex(function (cart) {
+    return cart._id === _id;
+  });
+  var newCart = _extends({}, currentCart[indexToUpdate], {
+    quantity: currentCart[indexToUpdate].quantity + unit
+  });
+  console.log(newCart);
+  var cartUpdate = [].concat(_toConsumableArray(currentCart.slice(0, indexToUpdate)), [newCart], _toConsumableArray(currentCart.slice(indexToUpdate + 1)));
+  return function (dispatch) {
+    _axios2.default.post("/api/cart", cartUpdate).then(function (res) {
+      dispatch({ type: "UPDATE_CART", load: res.data });
+    }).catch(function (err) {
+      dispatch({ type: "UPDATE_CART_REJECTED", load: err });
     });
-    var newCart = _extends({}, currentCart[indexToUpdate], { quantity: currentCart[indexToUpdate].quantity + unit });
-    console.log(newCart);
-    var cartUpdate = [].concat(_toConsumableArray(currentCart.slice(0, indexToUpdate)), [newCart], _toConsumableArray(currentCart.slice(indexToUpdate + 1)));
-    return function (dispatch) {
-        _axios2.default.post('/api/cart', cartUpdate).then(function (res) {
-            dispatch({ type: 'UPDATE_CART', load: res.data });
-        }).catch(function (err) {
-            dispatch({ type: 'UPDATE_CART_REJECTED', load: err });
-        });
-    };
+  };
 
-    // return{
-    //     type:'UPDATE_CART',
-    //     load:cartUpdate
-    // }
+  // return{
+  //     type:'UPDATE_CART',
+  //     load:cartUpdate
+  // }
 }
 
 /***/ }),
@@ -12775,6 +12777,8 @@ var BookForm = function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       var bookList = this.props.books.map(function (booksArr) {
         return _react2.default.createElement(
           "option",
@@ -12783,11 +12787,17 @@ var BookForm = function (_React$Component) {
         );
       });
 
-      /* const imgList=this.state.images.map((imgArr,index)=>{
-              return (
-                  <MenuItem key={index} eventKey={imgArr.name} onClick={this.handleImgSelected.bind(this,imgArr.name)}>{imgArr.name}</MenuItem>
-              )
-          },this) */
+      var imgList = this.state.images.map(function (imgArr, index) {
+        return _react2.default.createElement(
+          _reactBootstrap.MenuItem,
+          {
+            key: index,
+            eventKey: imgArr.name,
+            onClick: _this3.handleImgSelected.bind(_this3, imgArr.name)
+          },
+          imgArr.name
+        );
+      }, this);
 
       return _react2.default.createElement(
         _reactBootstrap.Grid,
@@ -12812,12 +12822,16 @@ var BookForm = function (_React$Component) {
                     ref: "imgName",
                     value: this.state.img
                   }),
-                  _react2.default.createElement(_reactBootstrap.DropdownButton, {
-                    componentClass: _reactBootstrap.InputGroup.Button,
-                    id: "input-dropdown-addon",
-                    title: "Select an image",
-                    bsStyle: "primary"
-                  })
+                  _react2.default.createElement(
+                    _reactBootstrap.DropdownButton,
+                    {
+                      componentClass: _reactBootstrap.InputGroup.Button,
+                      id: "input-dropdown-addon",
+                      title: "Select an image",
+                      bsStyle: "primary"
+                    },
+                    imgList
+                  )
                 ),
                 _react2.default.createElement(_reactBootstrap.Image, { src: this.state.img, responsive: true })
               )
@@ -12972,7 +12986,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -13000,257 +13014,275 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var CartPage = function (_React$Component) {
-    _inherits(CartPage, _React$Component);
+  _inherits(CartPage, _React$Component);
 
-    _createClass(CartPage, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.props.getCart();
-        }
-    }]);
-
-    function CartPage() {
-        _classCallCheck(this, CartPage);
-
-        var _this = _possibleConstructorReturn(this, (CartPage.__proto__ || Object.getPrototypeOf(CartPage)).call(this));
-
-        _this.onDelete = function (_id) {
-            // const index=this.props.cart.findIndex((cart)=>{
-            //     return cart._id===_id
-            // });
-            // let cartAfterDelete=[...this.props.cart.slice(0,index),...this.props.cart(index+1)];
-
-            var currentBook = _this.props.cart;
-            var index = currentBook.findIndex(function (cart) {
-                return cart._id === _id;
-            });
-            var cartAfterDelete = [].concat(_toConsumableArray(currentBook.slice(0, index)), _toConsumableArray(currentBook.slice(index + 1)));
-
-            _this.props.deleteCart(cartAfterDelete);
-        };
-
-        _this.onIncrement = function (_id) {
-            _this.props.updateCart(_id, 1, _this.props.cart);
-        };
-
-        _this.onDecrement = function (_id, quantity) {
-            if (quantity > 1) {
-                _this.props.updateCart(_id, -1, _this.props.cart);
-            }
-        };
-
-        _this.open = function () {
-            _this.setState({ showModal: true });
-        };
-
-        _this.close = function () {
-            return _this.setState({ showModal: false });
-        };
-
-        _this.state = {
-            showModal: false
-        };
-        return _this;
+  _createClass(CartPage, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.props.getCart();
     }
+  }]);
 
-    _createClass(CartPage, [{
-        key: 'render',
-        value: function render() {
-            if (this.props.cart[0]) {
-                return this.renderCart();
-            } else {
-                return this.renderEmptyCart();
-            }
-        }
-    }, {
-        key: 'renderEmptyCart',
-        value: function renderEmptyCart() {
-            return _react2.default.createElement('div', null);
-        }
-    }, {
-        key: 'renderCart',
-        value: function renderCart() {
-            var _this2 = this;
+  function CartPage() {
+    _classCallCheck(this, CartPage);
 
-            var cartItem = this.props.cart.map(function (bookCart) {
-                return _react2.default.createElement(
-                    _reactBootstrap.Panel,
-                    { key: bookCart._id },
-                    _react2.default.createElement(
-                        _reactBootstrap.Row,
-                        null,
-                        _react2.default.createElement(
-                            _reactBootstrap.Col,
-                            { xs: 12, sm: 4 },
-                            _react2.default.createElement(
-                                'h6',
-                                null,
-                                _react2.default.createElement(
-                                    'b',
-                                    null,
-                                    'Title:'
-                                ),
-                                bookCart.title
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactBootstrap.Col,
-                            { xs: 12, sm: 2 },
-                            _react2.default.createElement(
-                                'h6',
-                                null,
-                                bookCart.price,
-                                ' Euro'
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactBootstrap.Col,
-                            { xs: 12, sm: 3 },
-                            _react2.default.createElement(
-                                'h6',
-                                null,
-                                'Quantity:',
-                                _react2.default.createElement(
-                                    _reactBootstrap.Label,
-                                    { bsStyle: 'success' },
-                                    bookCart.quantity
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactBootstrap.Col,
-                            { xs: 6, sm: 3 },
-                            _react2.default.createElement(
-                                _reactBootstrap.ButtonGroup,
-                                null,
-                                _react2.default.createElement(
-                                    _reactBootstrap.Button,
-                                    { bsStyle: 'default', bsSize: 'small', onClick: function onClick() {
-                                            _this2.onDecrement(bookCart._id, bookCart.quantity);
-                                        } },
-                                    '-'
-                                ),
-                                _react2.default.createElement(
-                                    _reactBootstrap.Button,
-                                    { bsStyle: 'default', bsSize: 'small', onClick: function onClick() {
-                                            _this2.onIncrement(bookCart._id);
-                                        } },
-                                    '+'
-                                ),
-                                _react2.default.createElement(
-                                    _reactBootstrap.Button,
-                                    { bsStyle: 'danger', bsSize: 'small', onClick: function onClick() {
-                                            _this2.onDelete(bookCart._id);
-                                        } },
-                                    'Delete'
-                                )
-                            )
-                        )
-                    )
-                );
-            }, this);
+    var _this = _possibleConstructorReturn(this, (CartPage.__proto__ || Object.getPrototypeOf(CartPage)).call(this));
 
-            return _react2.default.createElement(
-                _reactBootstrap.Panel,
-                { header: 'Cart', bsStyle: 'primary' },
-                cartItem,
-                _react2.default.createElement('hr', null),
+    _this.onDelete = function (_id) {
+      // const index=this.props.cart.findIndex((cart)=>{
+      //     return cart._id===_id
+      // });
+      // let cartAfterDelete=[...this.props.cart.slice(0,index),...this.props.cart(index+1)];
+
+      var currentBook = _this.props.cart;
+      var index = currentBook.findIndex(function (cart) {
+        return cart._id === _id;
+      });
+      var cartAfterDelete = [].concat(_toConsumableArray(currentBook.slice(0, index)), _toConsumableArray(currentBook.slice(index + 1)));
+
+      _this.props.deleteCart(cartAfterDelete);
+    };
+
+    _this.onDeleteAllCarts = function () {
+      console.log("Delete all carts");
+      _this.props.deleteCart([]);
+    };
+
+    _this.onIncrement = function (_id) {
+      _this.props.updateCart(_id, 1, _this.props.cart);
+    };
+
+    _this.onDecrement = function (_id, quantity) {
+      if (quantity > 1) {
+        _this.props.updateCart(_id, -1, _this.props.cart);
+      }
+    };
+
+    _this.open = function () {
+      _this.setState({ showModal: true });
+    };
+
+    _this.close = function () {
+      _this.setState({ showModal: false });
+      _this.onDeleteAllCarts();
+    };
+
+    _this.state = {
+      showModal: false
+    };
+    return _this;
+  }
+
+  _createClass(CartPage, [{
+    key: "render",
+    value: function render() {
+      if (this.props.cart[0]) {
+        return this.renderCart();
+      } else {
+        return this.renderEmptyCart();
+      }
+    }
+  }, {
+    key: "renderEmptyCart",
+    value: function renderEmptyCart() {
+      return _react2.default.createElement("div", null);
+    }
+  }, {
+    key: "renderCart",
+    value: function renderCart() {
+      var _this2 = this;
+
+      var cartItem = this.props.cart.map(function (bookCart) {
+        return _react2.default.createElement(
+          _reactBootstrap.Panel,
+          { key: bookCart._id },
+          _react2.default.createElement(
+            _reactBootstrap.Row,
+            null,
+            _react2.default.createElement(
+              _reactBootstrap.Col,
+              { xs: 12, sm: 4 },
+              _react2.default.createElement(
+                "h6",
+                null,
                 _react2.default.createElement(
-                    _reactBootstrap.Row,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 12 },
-                        _react2.default.createElement(
-                            'h6',
-                            null,
-                            _react2.default.createElement(
-                                'b',
-                                null,
-                                'Total:'
-                            ),
-                            ' ',
-                            this.props.totalAmount,
-                            ' Euro'
-                        ),
-                        _react2.default.createElement(
-                            _reactBootstrap.Button,
-                            { bsStyle: 'success', bsSize: 'small', onClick: this.open },
-                            'PROCEED TO CHECKOUT'
-                        )
-                    )
+                  "b",
+                  null,
+                  "Title:"
+                ),
+                bookCart.title
+              )
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Col,
+              { xs: 12, sm: 2 },
+              _react2.default.createElement(
+                "h6",
+                null,
+                bookCart.price,
+                " Euro"
+              )
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Col,
+              { xs: 12, sm: 3 },
+              _react2.default.createElement(
+                "h6",
+                null,
+                "Quantity:",
+                _react2.default.createElement(
+                  _reactBootstrap.Label,
+                  { bsStyle: "success" },
+                  bookCart.quantity
+                )
+              )
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Col,
+              { xs: 6, sm: 3 },
+              _react2.default.createElement(
+                _reactBootstrap.ButtonGroup,
+                null,
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  {
+                    bsStyle: "default",
+                    bsSize: "small",
+                    onClick: function onClick() {
+                      _this2.onDecrement(bookCart._id, bookCart.quantity);
+                    }
+                  },
+                  "-"
                 ),
                 _react2.default.createElement(
-                    _reactBootstrap.Modal,
-                    { show: this.state.showModal, onHide: this.close },
-                    _react2.default.createElement(
-                        _reactBootstrap.Modal.Header,
-                        { closeButton: true },
-                        _react2.default.createElement(
-                            _reactBootstrap.Modal.Title,
-                            null,
-                            'Thank you'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Modal.Body,
-                        null,
-                        _react2.default.createElement(
-                            'h3',
-                            null,
-                            'Your order has been saved'
-                        ),
-                        _react2.default.createElement(
-                            'p',
-                            null,
-                            'Check email to confirm your order'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Modal.Footer,
-                        null,
-                        _react2.default.createElement(
-                            _reactBootstrap.Col,
-                            { xs: 6 },
-                            _react2.default.createElement(
-                                'h6',
-                                null,
-                                _react2.default.createElement(
-                                    'b',
-                                    null,
-                                    'Total amount:'
-                                ),
-                                ' ',
-                                this.props.totalAmount,
-                                ' Euro'
-                            )
-                        ),
-                        _react2.default.createElement(
-                            _reactBootstrap.Button,
-                            { bsStyle: 'primary', onClick: this.close },
-                            'Close'
-                        )
-                    )
+                  _reactBootstrap.Button,
+                  {
+                    bsStyle: "default",
+                    bsSize: "small",
+                    onClick: function onClick() {
+                      _this2.onIncrement(bookCart._id);
+                    }
+                  },
+                  "+"
+                ),
+                _react2.default.createElement(
+                  _reactBootstrap.Button,
+                  {
+                    bsStyle: "danger",
+                    bsSize: "small",
+                    onClick: function onClick() {
+                      _this2.onDelete(bookCart._id);
+                    }
+                  },
+                  "Delete"
                 )
-            );
-        }
-    }]);
+              )
+            )
+          )
+        );
+      }, this);
 
-    return CartPage;
+      return _react2.default.createElement(
+        _reactBootstrap.Panel,
+        { header: "Cart", bsStyle: "primary" },
+        cartItem,
+        _react2.default.createElement("hr", null),
+        _react2.default.createElement(
+          _reactBootstrap.Row,
+          null,
+          _react2.default.createElement(
+            _reactBootstrap.Col,
+            { xs: 12 },
+            _react2.default.createElement(
+              "h6",
+              null,
+              _react2.default.createElement(
+                "b",
+                null,
+                "Total:"
+              ),
+              " ",
+              this.props.totalAmount,
+              " Euro"
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: "success", bsSize: "small", onClick: this.open },
+              "PROCEED TO CHECKOUT"
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _reactBootstrap.Modal,
+          { show: this.state.showModal, onHide: this.close },
+          _react2.default.createElement(
+            _reactBootstrap.Modal.Header,
+            { closeButton: true },
+            _react2.default.createElement(
+              _reactBootstrap.Modal.Title,
+              null,
+              "Thank you"
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Modal.Body,
+            null,
+            _react2.default.createElement(
+              "h3",
+              null,
+              "Your order has been saved"
+            ),
+            _react2.default.createElement(
+              "p",
+              null,
+              "Check email to confirm your order"
+            )
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Modal.Footer,
+            null,
+            _react2.default.createElement(
+              _reactBootstrap.Col,
+              { xs: 6 },
+              _react2.default.createElement(
+                "h6",
+                null,
+                _react2.default.createElement(
+                  "b",
+                  null,
+                  "Total amount:"
+                ),
+                " ",
+                this.props.totalAmount,
+                " Euro"
+              )
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { bsStyle: "primary", onClick: this.close },
+              "Close"
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return CartPage;
 }(_react2.default.Component);
 
 function mapStateToProps(state) {
-    return {
-        cart: state.cart.cart,
-        totalAmount: state.cart.totalAmount
-    };
+  return {
+    cart: state.cart.cart,
+    totalAmount: state.cart.totalAmount
+  };
 }
 function mapDispatchToProps(dispatch) {
-    return (0, _redux.bindActionCreators)({
-        deleteCart: _cartActions.deleteCart,
-        updateCart: _cartActions.updateCart,
-        getCart: _cartActions.getCart
-    }, dispatch);
+  return (0, _redux.bindActionCreators)({
+    deleteCart: _cartActions.deleteCart,
+    updateCart: _cartActions.updateCart,
+    getCart: _cartActions.getCart
+  }, dispatch);
 }
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CartPage);
@@ -43762,66 +43794,66 @@ exports.default = (0, _redux.combineReducers)({
 // CART REDUCERS
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.totals = totals;
 var cartReducer = exports.cartReducer = function cartReducer() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { cart: [] };
-    var action = arguments[1];
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { cart: [] };
+  var action = arguments[1];
 
-    switch (action.type) {
-        case 'GET_CART':
-            return _extends({}, state, {
-                cart: action.load,
-                totalAmount: totals(action.load).amount,
-                totalQty: totals(action.load).qty
-            });
-        case 'ADD_TO_CART':
-            return _extends({}, state, {
-                cart: action.load,
-                totalAmount: totals(action.load).amount,
-                totalQty: totals(action.load).qty
-            });
-            break;
-        case 'DELETE_CART_ITEM':
-            return _extends({}, state, {
-                cart: action.load,
-                totalAmount: totals(action.load).amount,
-                totalQty: totals(action.load).qty
-            });
-            break;
-        case 'UPDATE_CART':
-            return _extends({}, state, {
-                cart: action.load,
-                totalAmount: totals(action.load).amount,
-                totalQty: totals(action.load).qty
-            });
-            break;
-    }
-    return state;
+  switch (action.type) {
+    case "GET_CART":
+      return _extends({}, state, {
+        cart: action.load,
+        totalAmount: totals(action.load).amount,
+        totalQty: totals(action.load).qty
+      });
+    case "ADD_TO_CART":
+      return _extends({}, state, {
+        cart: action.load,
+        totalAmount: totals(action.load).amount,
+        totalQty: totals(action.load).qty
+      });
+      break;
+    case "DELETE_CART_ITEM":
+      return _extends({}, state, {
+        cart: action.load,
+        totalAmount: totals(action.load).amount,
+        totalQty: totals(action.load).qty
+      });
+      break;
+    case "UPDATE_CART":
+      return _extends({}, state, {
+        cart: action.load,
+        totalAmount: totals(action.load).amount,
+        totalQty: totals(action.load).qty
+      });
+      break;
+  }
+  return state;
 };
 
 // Calculate Totals
 function totals(payloadArr) {
-    var totalAmount = payloadArr.map(function (cartArr) {
-        return cartArr.price * cartArr.quantity;
-    }).reduce(function (a, b) {
-        return a + b;
-    }, 0);
+  var totalAmount = payloadArr.map(function (cartArr) {
+    return cartArr.price * cartArr.quantity;
+  }).reduce(function (a, b) {
+    return a + b;
+  }, 0);
 
-    var totalQty = payloadArr.map(function (qty) {
-        return qty.quantity;
-    }).reduce(function (a, b) {
-        return a + b;
-    }, 0);
+  var totalQty = payloadArr.map(function (qty) {
+    return qty.quantity;
+  }).reduce(function (a, b) {
+    return a + b;
+  }, 0);
 
-    return {
-        amount: totalAmount.toFixed(2),
-        qty: totalQty
-    };
+  return {
+    amount: totalAmount.toFixed(2),
+    qty: totalQty
+  };
 }
 
 /***/ }),
