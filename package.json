@@ -1,9 +1,10 @@
 {
   "name": "bookapp",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www | node apiServer.js"
+    "start": "node ./bin/www & node apiServer.js & node server.js",
+    "build": "node_modules/.bin/webpack"
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",

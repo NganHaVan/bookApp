@@ -80,11 +80,17 @@ class BookForm extends React.Component {
       return <option key={booksArr._id}>{booksArr.title}</option>;
     });
 
-    /* const imgList=this.state.images.map((imgArr,index)=>{
-            return (
-                <MenuItem key={index} eventKey={imgArr.name} onClick={this.handleImgSelected.bind(this,imgArr.name)}>{imgArr.name}</MenuItem>
-            )
-        },this) */
+    const imgList = this.state.images.map((imgArr, index) => {
+      return (
+        <MenuItem
+          key={index}
+          eventKey={imgArr.name}
+          onClick={this.handleImgSelected.bind(this, imgArr.name)}
+        >
+          {imgArr.name}
+        </MenuItem>
+      );
+    }, this);
 
     return (
       <Grid>
@@ -104,7 +110,7 @@ class BookForm extends React.Component {
                     title="Select an image"
                     bsStyle="primary"
                   >
-                    {/* imgList */}
+                    {imgList}
                   </DropdownButton>
                 </InputGroup>
                 <Image src={this.state.img} responsive />
