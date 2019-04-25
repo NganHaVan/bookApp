@@ -76,7 +76,11 @@ class CartPage extends React.Component {
   }
 
   renderEmptyCart() {
-    return <div />;
+    return (
+      <div>
+        <h1>Your cart is empty</h1>
+      </div>
+    );
   }
 
   renderCart() {

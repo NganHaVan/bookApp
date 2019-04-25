@@ -13085,7 +13085,15 @@ var CartPage = function (_React$Component) {
   }, {
     key: "renderEmptyCart",
     value: function renderEmptyCart() {
-      return _react2.default.createElement("div", null);
+      return _react2.default.createElement(
+        "div",
+        null,
+        _react2.default.createElement(
+          "h1",
+          null,
+          "Your cart is empty"
+        )
+      );
     }
   }, {
     key: "renderCart",
@@ -56292,7 +56300,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -56308,6 +56316,8 @@ var _redux = __webpack_require__(29);
 var _reactBootstrap = __webpack_require__(25);
 
 var _bookActions = __webpack_require__(88);
+
+var _cartActions = __webpack_require__(85);
 
 var _bookItem = __webpack_require__(423);
 
@@ -56334,83 +56344,87 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var BookList = function (_React$Component) {
-    _inherits(BookList, _React$Component);
+  _inherits(BookList, _React$Component);
 
-    function BookList() {
-        _classCallCheck(this, BookList);
+  function BookList() {
+    _classCallCheck(this, BookList);
 
-        return _possibleConstructorReturn(this, (BookList.__proto__ || Object.getPrototypeOf(BookList)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (BookList.__proto__ || Object.getPrototypeOf(BookList)).apply(this, arguments));
+  }
+
+  _createClass(BookList, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.props.getBooks();
+      this.props.getCart();
     }
+  }, {
+    key: "render",
+    value: function render() {
+      // console.log('State accessed!', this.props.books);
+      // console.log('State accessed!', this.props.stateBook);
 
-    _createClass(BookList, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.props.getBooks();
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            // console.log('State accessed!', this.props.books);
-            // console.log('State accessed!', this.props.stateBook);
+      var bookList = this.props.books.map(function (book) {
+        return _react2.default.createElement(
+          _reactBootstrap.Col,
+          { xs: 12, sm: 6, md: 4, key: book._id },
+          _react2.default.createElement(_bookItem2.default, {
+            _id: book._id,
+            title: book.title,
+            description: book.description,
+            price: book.price,
+            images: book.images,
+            currency: book.currency
+          })
+        );
+      });
 
-            var bookList = this.props.books.map(function (book) {
-                return _react2.default.createElement(
-                    _reactBootstrap.Col,
-                    { xs: 12, sm: 6, md: 4, key: book._id },
-                    _react2.default.createElement(_bookItem2.default, { _id: book._id,
-                        title: book.title,
-                        description: book.description,
-                        price: book.price,
-                        images: book.images,
-                        currency: book.currency
-                    })
-                );
-            });
+      return _react2.default.createElement(
+        "div",
+        null,
+        _react2.default.createElement(
+          _reactBootstrap.Grid,
+          null,
+          _react2.default.createElement(
+            _reactBootstrap.Row,
+            null,
+            _react2.default.createElement(_carousel2.default, null)
+          ),
+          this.props.carts.length > 0 && _react2.default.createElement(
+            _reactBootstrap.Row,
+            { style: { marginTop: "15px" } },
+            _react2.default.createElement(_cart2.default, null)
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Row,
+            { style: { marginTop: "15px" } },
+            _react2.default.createElement(_bookForm2.default, null)
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Row,
+            null,
+            bookList
+          )
+        )
+      );
+    }
+  }]);
 
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    _reactBootstrap.Grid,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.Row,
-                        null,
-                        _react2.default.createElement(_carousel2.default, null)
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Row,
-                        null,
-                        _react2.default.createElement(_cart2.default, null)
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Row,
-                        { style: { marginTop: '15px' } },
-                        _react2.default.createElement(_bookForm2.default, null)
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Row,
-                        null,
-                        bookList
-                    )
-                )
-            );
-        }
-    }]);
-
-    return BookList;
+  return BookList;
 }(_react2.default.Component);
 
 function mapStateToProps(state) {
-    return {
-        books: state.books.books,
-        stateBook: state.books
-    };
+  return {
+    books: state.books.books,
+    stateBook: state.books,
+    carts: state.cart.cart
+  };
 }
 function mapDispatchToProps(dispatch) {
-    return (0, _redux.bindActionCreators)({
-        getBooks: _bookActions.getBooks
-    }, dispatch);
+  return (0, _redux.bindActionCreators)({
+    getBooks: _bookActions.getBooks,
+    getCart: _cartActions.getCart
+  }, dispatch);
 }
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BookList);
@@ -56423,7 +56437,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -56451,132 +56465,136 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var BookItem = function (_React$Component) {
-    _inherits(BookItem, _React$Component);
+  _inherits(BookItem, _React$Component);
 
-    function BookItem() {
-        _classCallCheck(this, BookItem);
+  function BookItem() {
+    _classCallCheck(this, BookItem);
 
-        var _this = _possibleConstructorReturn(this, (BookItem.__proto__ || Object.getPrototypeOf(BookItem)).call(this));
+    var _this = _possibleConstructorReturn(this, (BookItem.__proto__ || Object.getPrototypeOf(BookItem)).call(this));
 
-        _this.onReadmore = function () {
-            _this.setState({ isClicked: !_this.state.isClicked });
-        };
+    _this.onReadmore = function () {
+      _this.setState({ isClicked: !_this.state.isClicked });
+    };
 
-        _this.handleCart = function () {
-            var book = [].concat(_toConsumableArray(_this.props.cart), [{
-                _id: _this.props._id,
-                title: _this.props.title,
-                description: _this.props.description,
-                price: _this.props.price,
-                currency: _this.props.currency,
-                quantity: 1
-            }]);
-            // Check if the cart is empty
-            if (_this.props.cart.length > 0) {
-                // The cart is not empty
-                var _id = _this.props._id;
-                var cartIndex = _this.props.cart.findIndex(function (cart) {
-                    return cart._id === _id;
-                });
-                // If returns -1(no match) then add to cart
-                if (cartIndex === -1) {
-                    _this.props.addCart(book);
-                } else {
-                    // If match, update the quantity(UPDATE_CART action)
-                    _this.props.updateCart(_id, 1, _this.props.cart);
-                }
-            } else {
-                _this.props.addCart(book);
-            }
-        };
-
-        _this.state = {
-            isClicked: false
-        };
-        return _this;
-    }
-
-    _createClass(BookItem, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                _reactBootstrap.Well,
-                { style: { minHeight: '300px' } },
-                _react2.default.createElement(
-                    _reactBootstrap.Row,
-                    null,
-                    _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 12, sm: 6 },
-                        _react2.default.createElement(_reactBootstrap.Image, { src: this.props.images, responsive: true })
-                    ),
-                    _react2.default.createElement(
-                        _reactBootstrap.Col,
-                        { xs: 12, sm: 6 },
-                        _react2.default.createElement(
-                            'p',
-                            null,
-                            _react2.default.createElement(
-                                'b',
-                                null,
-                                'Title:'
-                            ),
-                            ' ',
-                            this.props.title
-                        ),
-                        _react2.default.createElement(
-                            'p',
-                            null,
-                            _react2.default.createElement(
-                                'b',
-                                null,
-                                'Description:'
-                            ),
-                            ' ',
-                            this.props.description.length > 20 && this.state.isClicked === false ? this.props.description.substring(0, 50) : this.props.description
-                        ),
-                        _react2.default.createElement(
-                            'button',
-                            { className: 'link', onClick: this.onReadmore.bind(this) },
-                            this.state.isClicked === false && this.props.description.length > 50 && this.props.description !== null ? '...Show more' : ''
-                        ),
-                        _react2.default.createElement(
-                            'p',
-                            null,
-                            _react2.default.createElement(
-                                'b',
-                                null,
-                                'Price:'
-                            ),
-                            ' ',
-                            this.props.price,
-                            ' Euro'
-                        ),
-                        _react2.default.createElement(
-                            _reactBootstrap.Button,
-                            { onClick: this.handleCart, bsStyle: 'primary' },
-                            'Buy Now'
-                        )
-                    )
-                )
-            );
+    _this.handleCart = function () {
+      var book = [].concat(_toConsumableArray(_this.props.cart), [{
+        _id: _this.props._id,
+        title: _this.props.title,
+        description: _this.props.description,
+        price: _this.props.price,
+        currency: _this.props.currency,
+        quantity: 1
+      }]);
+      // Check if the cart is empty
+      if (_this.props.cart.length > 0) {
+        // The cart is not empty
+        var _id = _this.props._id;
+        var cartIndex = _this.props.cart.findIndex(function (cart) {
+          return cart._id === _id;
+        });
+        // If returns -1(no match) then add to cart
+        if (cartIndex === -1) {
+          _this.props.addCart(book);
+        } else {
+          // If match, update the quantity(UPDATE_CART action)
+          _this.props.updateCart(_id, 1, _this.props.cart);
         }
-    }]);
+      } else {
+        _this.props.addCart(book);
+      }
+    };
 
-    return BookItem;
+    _this.state = {
+      isClicked: false
+    };
+    return _this;
+  }
+
+  _createClass(BookItem, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        _reactBootstrap.Well,
+        { style: { minHeight: "300px" } },
+        _react2.default.createElement(
+          _reactBootstrap.Row,
+          null,
+          _react2.default.createElement(
+            _reactBootstrap.Col,
+            { xs: 12, sm: 6 },
+            _react2.default.createElement(_reactBootstrap.Image, { src: this.props.images, responsive: true })
+          ),
+          _react2.default.createElement(
+            _reactBootstrap.Col,
+            { xs: 12, sm: 6 },
+            _react2.default.createElement(
+              "p",
+              null,
+              _react2.default.createElement(
+                "b",
+                null,
+                "Title:"
+              ),
+              " ",
+              this.props.title
+            ),
+            _react2.default.createElement(
+              "p",
+              null,
+              _react2.default.createElement(
+                "b",
+                null,
+                "Description:"
+              ),
+              " ",
+              this.props.description.length > 20 && this.state.isClicked === false ? this.props.description.substring(0, 50) : this.props.description
+            ),
+            !this.state.isClicked ? _react2.default.createElement(
+              "button",
+              { className: "link", onClick: this.onReadmore.bind(this) },
+              !this.state.isClicked && this.props.description.length > 50 && this.props.description !== null ? "... Show more" : ""
+            ) : _react2.default.createElement(
+              "button",
+              { className: "link", onClick: this.onReadmore.bind(this) },
+              "Show less"
+            ),
+            _react2.default.createElement(
+              "p",
+              null,
+              _react2.default.createElement(
+                "b",
+                null,
+                "Price:"
+              ),
+              " ",
+              this.props.price,
+              " Euro"
+            ),
+            _react2.default.createElement(
+              _reactBootstrap.Button,
+              { onClick: this.handleCart, bsStyle: "primary" },
+              "Buy Now"
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return BookItem;
 }(_react2.default.Component);
 
 function mapStateToProps(state) {
-    return {
-        cart: state.cart.cart
-    };
+  return {
+    cart: state.cart.cart
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return (0, _redux.bindActionCreators)({
-        addCart: _cartActions.addToCart,
-        updateCart: _cartActions.updateCart
-    }, dispatch);
+  return (0, _redux.bindActionCreators)({
+    addCart: _cartActions.addToCart,
+    updateCart: _cartActions.updateCart
+  }, dispatch);
 }
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BookItem);
